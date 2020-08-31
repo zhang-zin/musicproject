@@ -31,7 +31,6 @@ object PlayerManager : IPlayController<TestAlbum, TestMusic> {
         }
     }
 
-
     override fun clear() {
 
     }
@@ -45,7 +44,7 @@ object PlayerManager : IPlayController<TestAlbum, TestMusic> {
     }
 
     override fun loadAlbum(musicAlbum: TestAlbum?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mController.loadAlbum(mContext, musicAlbum)
     }
 
     override fun loadAlbum(musicAlbum: TestAlbum?, playIndex: Int) {
@@ -65,7 +64,7 @@ object PlayerManager : IPlayController<TestAlbum, TestMusic> {
     }
 
     override fun playAudio(albumIndex: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        mController.playAudio(mContext, albumIndex)
     }
 
     override fun getPlayingMusicLiveData(): MutableLiveData<PlayingMusic<BaseArtistItem, BaseAlbumItem<*, *>>> {
@@ -76,8 +75,8 @@ object PlayerManager : IPlayController<TestAlbum, TestMusic> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getAlbum(): BaseAlbumItem<out BaseMusicItem<*>, *> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getAlbum(): BaseAlbumItem<out BaseMusicItem<*>, *>? {
+        return mController.album
     }
 
     override fun playAgain() {
@@ -97,7 +96,7 @@ object PlayerManager : IPlayController<TestAlbum, TestMusic> {
     }
 
     override fun getChangeMusicLiveData(): MutableLiveData<ChangeMusic<BaseAlbumItem<*, *>, BaseMusicItem<*>, BaseArtistItem>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return mController.changeMusicLiveData
     }
 
     override fun setSeek(progress: Int) {
@@ -105,7 +104,7 @@ object PlayerManager : IPlayController<TestAlbum, TestMusic> {
     }
 
     override fun getAlbumIndex(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return mController.albumIndex
     }
 
     override fun playPrevious() {

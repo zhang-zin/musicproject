@@ -1,5 +1,6 @@
 package com.example.musicproject.ui.page
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +16,10 @@ import com.example.musicproject.bridge.state.MainViewModel
 import com.example.musicproject.data.bean.TestMusic
 import com.example.musicproject.databinding.AdapterPlayItemBinding
 import com.example.musicproject.databinding.FragmentMainBinding
+import com.example.musicproject.player.PlayerManager
 import com.example.musicproject.ui.adapter.SimpleBaseBindingAdapter
 import com.example.musicproject.ui.base.BaseFragment
+import com.kunminx.player.bean.dto.ChangeMusic
 
 class MainFragment : BaseFragment() {
 
@@ -68,21 +71,47 @@ class MainFragment : BaseFragment() {
                     tvTitle.text = item?.title ?: ""
                     tvArtist.text = item?.artist?.name ?: ""
                     Glide.with(this@MainFragment).load(item?.coverImg).into(ivCover)
+                    val currentIndex = PlayerManager.albumIndex
 
+                    // 播放的标记
+
+                    // 播放的标记
+                    binding.ivPlayStatus.setColor(
+                        if (currentIndex == holder.adapterPosition) resources.getColor(
+                            R.color.colorAccent
+                        ) else Color.TRANSPARENT
+                    ) // 播放的时候，右变状态图标就是红色， 如果对不上的时候，就是没有
+
+                    binding.root.setOnClickListener {
+                        PlayerManager.playAudio(holder.adapterPosition)
+                    }
                 }
             }
         }
-
         mainBinding.rv.adapter = adapter
 
         musicRequestViewModel.musicsLiveData.observe(viewLifecycleOwner, Observer {
             if (it != null && it.musics != null) {
                 adapter.mList = it.musics
                 adapter.notifyDataSetChanged()
+
+                // 播放相关的业务需要这个数据
+
+                // 播放相关的业务需要这个数据
+                if (PlayerManager.album == null || PlayerManager.album?.albumId != it.albumId) {
+                    PlayerManager.loadAlbum(it)
+                }
             }
         })
 
-        musicRequestViewModel.requestMusics()
+        PlayerManager.getChangeMusicLiveData().observe(viewLifecycleOwner,
+            Observer<ChangeMusic<*, *, *>?> {
+                adapter.notifyDataSetChanged() // 更新及时
+            })
+
+        if (PlayerManager.album == null) {
+            musicRequestViewModel.requestMusics()
+        }
 
     }
 
